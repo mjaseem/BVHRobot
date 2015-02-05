@@ -2,15 +2,15 @@
 
 namespace Blocks {
 
-	void defineCuboid(double length,double width,double height,TextureFaces &tf)
+	void defineCuboid(double length,double width,double height)
 	{
 		//std::cout<<"Cuboid";
 		double half_length,half_width,half_height;
 		half_length=length/2;
 		half_width=width/2;
 		half_height=height/2;
-
-		glBindTexture(GL_TEXTURE_2D,tf.front);
+		glColor3f(1,0,1);
+		//glBindTexture(GL_TEXTURE_2D,tf.front);
 		glBegin(GL_QUADS);
 		    glNormal3f(0.0f, 0.0f, -1.0f);
 		    glTexCoord2d(0.0,0.0);	    
@@ -23,7 +23,8 @@ namespace Blocks {
 		    glVertex3f(-half_length,half_width,half_height);
 		glEnd();
 
-		glBindTexture(GL_TEXTURE_2D,tf.top);
+//		glColor3f(1,1,0);
+		//glBindTexture(GL_TEXTURE_2D,tf.top);
 		glBegin(GL_QUADS);    
 			glNormal3f(0.0f, -1.0f,0.0f);
 		    glTexCoord2d(0.0,0.0);	
@@ -36,10 +37,10 @@ namespace Blocks {
 		    glVertex3f(half_length,half_width,-half_height);
 		glEnd();
 		
-		glBindTexture(GL_TEXTURE_2D,tf.back);
+		//glBindTexture(GL_TEXTURE_2D,tf.back);
 		glBegin(GL_QUADS);    
 			glNormal3f(0.0f, 0.0f, 1.0f);
-	        glTexCoord2d(0.0,0.0);
+	        	glTexCoord2d(0.0,0.0);
 		    glVertex3f(half_length,half_width,-half_height);
 		    glTexCoord2d(1.0,0.0);
 		    glVertex3f(-half_length,half_width,-half_height);
@@ -49,7 +50,7 @@ namespace Blocks {
 		    glVertex3f(half_length,-half_width,-half_height);
 		glEnd();
 		
-		glBindTexture(GL_TEXTURE_2D,tf.bottom);
+		//glBindTexture(GL_TEXTURE_2D,tf.bottom);
 		glBegin(GL_QUADS);    
 			glNormal3f(0.0f, 1.0f,0.0f);
 		    glTexCoord2d(0.0,0.0);
@@ -62,7 +63,7 @@ namespace Blocks {
 		    glVertex3f(half_length,-half_width,half_height);
 		glEnd();
 		
-		glBindTexture(GL_TEXTURE_2D,tf.left);
+		//glBindTexture(GL_TEXTURE_2D,tf.left);
 		glBegin(GL_QUADS);    
 			glNormal3f(-1.0f, 0.0f,0.0f);
 		    glTexCoord2d(0.0,0.0);
@@ -75,7 +76,7 @@ namespace Blocks {
 		    glVertex3f(half_length,half_width,half_height);
 		glEnd();
 		
-		glBindTexture(GL_TEXTURE_2D,tf.right);
+		//glBindTexture(GL_TEXTURE_2D,tf.right);
 		glBegin(GL_QUADS);    
 			glNormal3f(1.0f, 0.0f,0.0f);
 		    glTexCoord2d(0.0,0.0);
@@ -89,7 +90,7 @@ namespace Blocks {
 		glEnd();
 	}
 
-	void defineTrapizoid(double top_length,double bottom_length, double width, double height, TextureFaces &tf) {
+	void defineTrapizoid(double top_length,double bottom_length, double width, double height) {
 
 		double half_top_length, half_bottom_length,half_width,half_height;
 
@@ -107,7 +108,8 @@ namespace Blocks {
 #define 	POINT_G		glVertex3f(half_top_length,half_height,half_width)
 #define 	POINT_H		glVertex3f(-half_top_length,half_height,half_width)
 
-		glBindTexture(GL_TEXTURE_2D,tf.top);
+		//glBindTexture(GL_TEXTURE_2D,tf.top);
+		glColor3f(1,0,1);
 		glBegin(GL_QUADS);
 			/* Top face*/
 			glNormal3f(0.0f, -1.0f,0.0f);
@@ -121,7 +123,7 @@ namespace Blocks {
 			POINT_H;
 		glEnd();
 
-		glBindTexture(GL_TEXTURE_2D,tf.bottom);
+		//glBindTexture(GL_TEXTURE_2D,tf.bottom);
 		glBegin(GL_QUADS);		 
 			/* Bottom face*/
 			glNormal3f(0.0f, 1.0f,0.0f);
@@ -135,7 +137,7 @@ namespace Blocks {
 			POINT_E;
 		glEnd();
 
-		glBindTexture(GL_TEXTURE_2D,tf.front);
+		//glBindTexture(GL_TEXTURE_2D,tf.front);
 		glBegin(GL_QUADS);
 
 			/* Front face */
@@ -150,7 +152,7 @@ namespace Blocks {
 			POINT_A;
 		glEnd();
 		  
-		glBindTexture(GL_TEXTURE_2D,tf.left);
+		//glBindTexture(GL_TEXTURE_2D,tf.left);
 		glBegin(GL_QUADS);
 			/*Left face*/
 			glNormal3f(1.0f, 0.0f,0.0f);
@@ -164,7 +166,7 @@ namespace Blocks {
 			POINT_D;
 		glEnd();
 		  
-		glBindTexture(GL_TEXTURE_2D,tf.right);
+		//glBindTexture(GL_TEXTURE_2D,tf.right);
 		glBegin(GL_QUADS);
 			/*Right face*/
 			glNormal3f(-1.0f, 0.0f,0.0f);
@@ -178,7 +180,7 @@ namespace Blocks {
 			POINT_B;
 		glEnd();
 		 
-		glBindTexture(GL_TEXTURE_2D,tf.back);
+		//glBindTexture(GL_TEXTURE_2D,tf.back);
 		glBegin(GL_QUADS);
 			/*Back face*/
 			glNormal3f(0.0f, 0.0f,-1.0f);

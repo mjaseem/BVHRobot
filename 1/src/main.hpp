@@ -26,13 +26,12 @@
 #include "bvh.hpp"
 #include "error.hpp"
 #include "gl_framework.hpp"
-
-//#include "robot.hpp"
+#include "robot.hpp"
 
 
 bvh::bvh_t* bvh_fig;
 std::string progname, bvhfilename;
-//Robot robot;
+Robot robot;
 /*!
   \fn void usage(void)
   \brief This function displays the usage message

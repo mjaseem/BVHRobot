@@ -12,13 +12,10 @@ LIBS=$(OPENGLLIB) $(GLEWLIB) $(GLFWLIB) -lXrandr -lXi -lm -lXxf86vm -lX11 -lpthr
 BIN=BVHPlayer
 OBJ1=error.o matvec.o
 OBJ2=bvh_tokens.o bvh_joints.o bvh_hierarchy.o bvh.o gl_framework.o
-OBJ3=main.o 
+OBJ3=main.o  blocks.o keycontrols.o robot.o
 OBJ=$(OBJ1) $(OBJ2) $(OBJ3)
 LIB1=libUtil.a
 LIB2=libBVH.a
-
-#SRCS= gl_framework.cpp texture.cpp blocks.cpp keycontrols.cpp robot.cpp  
-#INCLUDES= gl_framework.hpp texture.hpp blocks.hpp keycontrols.hpp robot.hpp 
 
 CFLAGS=-c -g -D_DEBUG -Wall -Woverloaded-virtual -Winline
 
@@ -59,11 +56,14 @@ new: clean main
 
 
 # DO NOT DELETE
+blocks.o : blocks.hpp
+keycontrols.o : keycontrols.hpp
+robot.o : robot.hpp 
 gl_framework.o: gl_framework.hpp
 bvh.o: bvh.hpp bvh_hierarchy.hpp bvh_joints.hpp bvh_tokens.hpp matvec.hpp error.hpp
 bvh_hierarchy.o: bvh_hierarchy.hpp bvh_joints.hpp bvh_tokens.hpp matvec.hpp error.hpp
 bvh_joints.o: bvh_joints.hpp bvh_tokens.hpp matvec.hpp error.hpp
 bvh_tokens.o: bvh_tokens.hpp
 error.o: error.hpp
-main.o: bvh_tokens.hpp bvh.hpp 
+main.o: bvh_tokens.hpp bvh.hpp  
 matvec.o: matvec.hpp error.hpp

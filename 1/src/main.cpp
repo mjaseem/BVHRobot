@@ -28,17 +28,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
       SKELETON=!SKELETON;
   }
-
+float** Animation_data;
 void renderGL( void )
 {
-    glBegin(GL_LINES);
+    if (SKELETON==true){
+    	glBegin(GL_LINES);
 	bvh_fig->render_canonical_pose();
-    glEnd();
-    //float** Animation_data=bvh_fig->get_motion()->get_data();
-    for(unsigned int i=0;i<(bvh_fig->get_motion()->get_frames());i++)
+    	glEnd();
+    }
+    
+    for(unsigned int i=0;i<bvh_fig->get_motion()->get_frames();i++)
     {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if((PLAY==true)&&(SKELETON==true)){
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 		glfwSetTime(0);
 		bvh_fig->render_frame(i);
 		while(glfwGetTime() <= 0.01);
@@ -46,19 +49,25 @@ void renderGL( void )
 		glfwPollEvents();
 		}
 	else if((PLAY==true)&&(SKELETON==false)){
-		//robot.makeRobot(Animation_data[i]);
+		Animation_data=(float**)malloc(sizeof(bvh_fig->get_motion()->get_data()));
+		Animation_data=bvh_fig->get_motion()->get_data();
+		robot.makeRobot(Animation_data[i]);
+		glfwSwapBuffers(glfwGetCurrentContext());
+		glfwPollEvents();
+		//robot.makeRobot();
 	}
 	else if(PLAY==false){
 		while(PLAY==false){
 		glfwSwapBuffers(glfwGetCurrentContext());
 		glfwPollEvents();
 		}
+		
 	}
     }
 }
 int main(int argc, char **argv)
 {
-  
+  GLFWwindow* window;
   progname = argv[0];
 
   bool bvhf_flag = false;
@@ -84,10 +93,10 @@ int main(int argc, char **argv)
   if (!(bvhf_flag)) usage();
 
   try 
-    { 
+    {
       bvh_fig = new bvh::bvh_t(bvhfilename, true); 
       try 
-	{ 
+	{
 	  bvh_fig->print_hierarchy(std::cout); 
 	  //bvh_fig->print_motion(std::cout); 
 	}
@@ -100,7 +109,7 @@ int main(int argc, char **argv)
        */
  
   	//! The pointer to the GLFW window
-  	GLFWwindow* window;
+  	
 	PLAY=true;
 	SKELETON=true;
 
@@ -113,7 +122,7 @@ int main(int argc, char **argv)
 
   	int win_width=512;
   	int win_height=512;
-	//robot = Robot();
+	
   	//! Create a windowed mode window and its OpenGL context
   	window = glfwCreateWindow(win_width, win_height, "Transformers", NULL, NULL);
   	if (!window)
@@ -137,9 +146,9 @@ int main(int argc, char **argv)
   	cs775::framebuffer_size_callback(window, win_width, win_height);
   	//Initialize GL state
   	cs775::initGL();
+  	robot = Robot();
   
-  
-  	glScalef(0.001,0.001,0.001);
+  	glScalef(0.01,0.01,0.01);
 	while (glfwWindowShouldClose(window) == 0)
     	  {
 		 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -156,7 +165,8 @@ int main(int argc, char **argv)
     }
   catch (util::common::error *e)
     { util::common::error::halt_on_error(e); }
-
+  glfwDestroyWindow(window);
+  glfwTerminate();
   return 0;
 }
 

@@ -125,7 +125,9 @@ public:
     Robot()
     {
       initStructuralConstraints();
+      
       initTexture();
+      //initLights();
       
       initHip();
       initBust();
@@ -159,6 +161,11 @@ public:
     }
 
   void initTexture();
+
+  //void initLights();
+  //void setLights();
+  void setRobotProperties();
+
   void initStructuralConstraints();
   //initilize Hip structure
   void initHip();
@@ -229,10 +236,11 @@ public:
   void makeLeftFoot(double angle_x);
   void makeRightFoot(double angle_x);
 
-  void makeRobot(float* frame);
+  void makeRobot(void);
+  void makeRobot(float* vector);
   void setFrameConstraints();
 
-  void transform();
+  void animate();
 }; 
 
 #endif

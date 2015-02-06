@@ -45,3 +45,4 @@ void usage(void);
   * CS 775: Call the function that will start your rendering in here.
 */
 int main(int argc, char **argv);
+void initSetup(void);

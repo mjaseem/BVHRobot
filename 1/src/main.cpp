@@ -15,6 +15,7 @@ void usage(void)
 
 bool PLAY;
 bool SKELETON;
+bool FORWARD,BACKWARD;
 
 
 //!GLFW keyboard callback
@@ -27,7 +28,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
       PLAY=!PLAY;
     if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
       SKELETON=!SKELETON;
+    if (key == GLFW_KEY_F2 && action == GLFW_PRESS)
+      FORWARD=true;
+    if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
+      BACKWARD=true;
   }
+
 float** Animation_data;
 void renderGL( void )
 {
@@ -36,28 +42,46 @@ void renderGL( void )
 	bvh_fig->render_canonical_pose();
     	glEnd();
     }
-    
+    Animation_data=(float**)malloc(sizeof(bvh_fig->get_motion()->get_data()));
+    Animation_data=bvh_fig->get_motion()->get_data();
     for(unsigned int i=0;i<bvh_fig->get_motion()->get_frames();i++)
     {
+	
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if((PLAY==true)&&(SKELETON==true)){
 		
 		glfwSetTime(0);
 		bvh_fig->render_frame(i);
-		while(glfwGetTime() <= 0.01);
+		while(glfwGetTime() <= bvh_fig->get_motion()->get_frame_rate());
 		glfwSwapBuffers(glfwGetCurrentContext());
 		glfwPollEvents();
 		}
+
 	else if((PLAY==true)&&(SKELETON==false)){
-		Animation_data=(float**)malloc(sizeof(bvh_fig->get_motion()->get_data()));
-		Animation_data=bvh_fig->get_motion()->get_data();
+		
 		robot.makeRobot(Animation_data[i]);
+		while(glfwGetTime() <= bvh_fig->get_motion()->get_frame_rate());
 		glfwSwapBuffers(glfwGetCurrentContext());
 		glfwPollEvents();
 		//robot.makeRobot();
 	}
+
 	else if(PLAY==false){
 		while(PLAY==false){
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if(FORWARD==true){
+			i++;
+			FORWARD=false;
+		}
+		if(BACKWARD==true){
+			i--;
+			BACKWARD=false;
+		}
+		if(SKELETON==false){
+			robot.makeRobot(Animation_data[i]);
+		}
+		else
+			bvh_fig->render_frame(i);
 		glfwSwapBuffers(glfwGetCurrentContext());
 		glfwPollEvents();
 		}
@@ -65,9 +89,10 @@ void renderGL( void )
 	}
     }
 }
+
+
 int main(int argc, char **argv)
 {
-  GLFWwindow* window;
   progname = argv[0];
 
   bool bvhf_flag = false;
@@ -98,7 +123,6 @@ int main(int argc, char **argv)
       try 
 	{
 	  bvh_fig->print_hierarchy(std::cout); 
-	  //bvh_fig->print_motion(std::cout); 
 	}
       catch (util::common::error *e)
 	{ util::common::error::halt_on_error(e); }
@@ -120,7 +144,34 @@ int main(int argc, char **argv)
   	if (!glfwInit())
     	  return -1;
 
-  	int win_width=512;
+	initSetup();
+  	robot = Robot();
+  	glScalef(0.01,0.01,0.01);
+	while (glfwWindowShouldClose(glfwGetCurrentContext()) == 0)
+    	  {
+		 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    		 glEnable(GL_DEPTH_TEST);
+   		 renderGL();
+		  // Swap front and back buffers
+      		 glfwSwapBuffers(glfwGetCurrentContext());
+      		  // Poll for and process events
+      		 glfwPollEvents();
+
+    	  }
+
+
+    }
+  catch (util::common::error *e)
+    { util::common::error::halt_on_error(e); }
+  glfwDestroyWindow(glfwGetCurrentContext());
+  glfwTerminate();
+  return 0;
+}
+
+
+void initSetup(void){
+        GLFWwindow* window;
+        int win_width=512;
   	int win_height=512;
 	
   	//! Create a windowed mode window and its OpenGL context
@@ -128,7 +179,7 @@ int main(int argc, char **argv)
   	if (!window)
     	{
       	  glfwTerminate();
-      	  return -1;
+      	  exit(0);
     	}
   
   	//! Make the window's context current 
@@ -146,29 +197,6 @@ int main(int argc, char **argv)
   	cs775::framebuffer_size_callback(window, win_width, win_height);
   	//Initialize GL state
   	cs775::initGL();
-  	robot = Robot();
-  
-  	glScalef(0.01,0.01,0.01);
-	while (glfwWindowShouldClose(window) == 0)
-    	  {
-		 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    		 glEnable(GL_DEPTH_TEST);
-   		 renderGL();
-		  // Swap front and back buffers
-      		 glfwSwapBuffers(window);
-      		  // Poll for and process events
-      		 glfwPollEvents();
-
-    	  }
-
-
-    }
-  catch (util::common::error *e)
-    { util::common::error::halt_on_error(e); }
-  glfwDestroyWindow(window);
-  glfwTerminate();
-  return 0;
 }
-
 
 //-----------------------------------------------------------------------

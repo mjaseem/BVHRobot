@@ -16,7 +16,7 @@ void usage(void)
 bool PLAY;
 bool SKELETON;
 bool FORWARD,BACKWARD;
-
+bool CAMERA;
 
 //!GLFW keyboard callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -32,6 +32,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
       FORWARD=true;
     if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
       BACKWARD=true;
+    if (key == GLFW_KEY_F4 && action == GLFW_PRESS)
+      CAMERA=!CAMERA;
   }
 
 float** Animation_data;
@@ -51,7 +53,12 @@ void renderGL( void )
 	if((PLAY==true)&&(SKELETON==true)){
 		
 		glfwSetTime(0);
+    glPushMatrix();
+    if(CAMERA)
+      glTranslatef(-Animation_data[i][0],-Animation_data[i][1],-Animation_data[i][2]);
 		bvh_fig->render_frame(i);
+    glPopMatrix();
+    
 		while(glfwGetTime() <= bvh_fig->get_motion()->get_frame_rate());
 		glfwSwapBuffers(glfwGetCurrentContext());
 		glfwPollEvents();
@@ -81,7 +88,12 @@ void renderGL( void )
 			robot.makeRobot(Animation_data[i]);
 		}
 		else
-			bvh_fig->render_frame(i);
+			glPushMatrix();
+    if(CAMERA)
+      glTranslatef(-Animation_data[i][0],-Animation_data[i][1],-Animation_data[i][2]);
+    bvh_fig->render_frame(i);
+    glPopMatrix();
+
 		glfwSwapBuffers(glfwGetCurrentContext());
 		glfwPollEvents();
 		}
@@ -136,7 +148,7 @@ int main(int argc, char **argv)
   	
 	PLAY=true;
 	SKELETON=true;
-
+  CAMERA=false;
   	//! Setting up the GLFW Error callback
   	glfwSetErrorCallback(cs775::error_callback);
 

@@ -14,7 +14,6 @@ bool PLAY;
 bool SKELETON;
 bool FORWARD,BACKWARD;
 bool CAMERA;
-bool PRINTVALUES;
 
 //!GLFW keyboard callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -32,8 +31,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		BACKWARD=true;
 	if (key == GLFW_KEY_F4 && action == GLFW_PRESS)
 		CAMERA=!CAMERA;
-	if (key == GLFW_KEY_F7 && action == GLFW_PRESS)
-		PRINTVALUES=true;
+
 }
 
 float** Animation_data;
@@ -49,12 +47,16 @@ void renderGL(unsigned int i){
 	if(SKELETON==true){
 		glfwSetTime(0);
 		if(CAMERA)
-			gluLookAt(Animation_data[i][0],Animation_data[i][1],Animation_data[i][2]+50,Animation_data[i][0],Animation_data[i][1],Animation_data[i][2],0,1,0);
+			gluLookAt(Animation_data[i][0],Animation_data[i][1],Animation_data[i][2]+100,Animation_data[i][0],Animation_data[i][1],Animation_data[i][2],0,1,0);
 		bvh_fig->render_frame(i);
 		
 		while(glfwGetTime() <= bvh_fig->get_motion()->get_frame_rate());
 	}
 	else{
+		glfwSetTime(0);
+		if(CAMERA)
+			gluLookAt(Animation_data[i][0],Animation_data[i][1],Animation_data[i][2]+100,Animation_data[i][0],Animation_data[i][1],Animation_data[i][2],0,1,0);
+		glScalef(2,2,2);
 		robot.makeRobot(Animation_data[i]);
 		while(glfwGetTime() <= bvh_fig->get_motion()->get_frame_rate());
 	}
@@ -111,7 +113,7 @@ int main(int argc, char **argv)
 		PLAY=false;
 		SKELETON=true;
 		CAMERA=false;
-		PRINTVALUES=false;
+
 		robot = Robot();
 
       	glScalef(0.005,0.005,0.005);
@@ -129,13 +131,7 @@ int main(int argc, char **argv)
        		if(PLAY && (i<bvh_fig->get_motion()->get_frames()-1)) i++;
        		else if(!PLAY && FORWARD && (i<bvh_fig->get_motion()->get_frames()-1)) {i++; FORWARD=false;}
        		else if(!PLAY && BACKWARD && i>0) {i--; BACKWARD=false; }
-       		if(PRINTVALUES && !PLAY){
-       			PRINTVALUES=false;
-       			for(unsigned int j=0;j<sizeof(Animation_data[i]);j++){
-       				std::cout<<Animation_data[i][j]<<"\t";
-       			}
-       			std::cout<<std::endl;
-       		}
+
 		}
 	}
 	catch (util::common::error *e)

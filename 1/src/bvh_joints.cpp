@@ -254,39 +254,47 @@ void joint_t::update_matrix(float *data_channels)
   for(int i=0;i<channels.num_channels;i++)
     {
       double data_value=data_channels[i];
-      util::math::vec3 x_axis,y_axis,z_axis;
-      util::math::mat44 Rotation_X,Rotation_Y,Rotation_Z;
       switch(channels.ch_order[i])
         {
 	  case _xpos:
-		for(i=0;i<4;i++)
-		   M[i][3]+=M[i][0]*data_value;
+	  	{
+	  	util::math::mat44 TransX=util::math::mat44::translation3D(data_value, 0, 0);
+	  	M=M*TransX;
 		break;
+		}
  	  case _ypos:
-		//M[1][3]+=data_value;
-		for(i=0;i<4;i++)
-		   M[i][3]+=M[i][1]*data_value;
+ 	  	{
+		util::math::mat44 TransY=util::math::mat44::translation3D(0,data_value, 0);
+		M=M*TransY;
 		break;
+		}
 	  case _zpos:
-		//M[2][3]+=data_value;
-		for(i=0;i<4;i++)
-		   M[i][3]+=M[i][2]*data_value;
+	  	{
+		util::math::mat44 TransZ=util::math::mat44::translation3D(0,0,data_value);
+		M=M*TransZ;
 		break;
+		}
 	  case _xrot:
-		x_axis=util::math::vec3(1,0,0);
-		Rotation_X=util::math::mat44::rotation3D(x_axis,data_value);
+	  	{
+		util::math::vec3 x_axis=util::math::vec3(1,0,0);
+		util::math::mat44 Rotation_X=util::math::mat44::rotation3D(x_axis,data_value);
 		M=M*Rotation_X;
 		break;
+		}
 	  case _yrot:
-		y_axis=util::math::vec3(0,1,0);
-		Rotation_Y=util::math::mat44::rotation3D(y_axis,data_value);
+	  	{
+		util::math::vec3 y_axis=util::math::vec3(0,1,0);
+		util::math::mat44 Rotation_Y=util::math::mat44::rotation3D(y_axis,data_value);
 		M=M*Rotation_Y;
+		}
 		break;
 	  case _zrot:
-		z_axis=util::math::vec3(0,0,1);
-		Rotation_Z=util::math::mat44::rotation3D(z_axis,data_value);
+	  	{
+		util::math::vec3 z_axis=util::math::vec3(0,0,1);
+		util::math::mat44 Rotation_Z=util::math::mat44::rotation3D(z_axis,data_value);
 		M=M*Rotation_Z;
 		break;
+		}
 	}
       util::math::mat44 Translation=util::math::mat44::translation3D(offset);
       M=M*Translation;

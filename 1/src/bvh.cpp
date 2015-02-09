@@ -117,14 +117,16 @@ void bvh_t::print_motion(std::ostream &out)
 void bvh_t::render_pose(joint_t *jtptr)
 {
   /* CS775: Implement this method */
+  glPushMatrix();
   util::math::vec4 point1;
   util::math::vec4 point2;
   util::math::mat44 current_M=jtptr->get_absolute_M();
   util::math::vec4 origin=util::math::vec4(0,0,0,1);
   joint_t* parent=jtptr->get_parent();
   point1=current_M*origin;
-
+  //std::cout<<"Creating a joint"<<std::endl;
   //Making sphere at joint position
+  glBegin(GL_LINES);
   for(double phi=0;phi<2*3.14;phi+=0.314){
      for(double theta=0;theta<3.14;theta+=0.314){
 	util::math::vec3 sphere_point;
@@ -144,10 +146,17 @@ void bvh_t::render_pose(joint_t *jtptr)
     }
   else
     point2=point1;
-  glVertex3f(point1[0]/point1[3],point1[1]/point1[3],point1[2]/point1[3]);
-  glVertex3f(point2[0]/point2[3],point2[1]/point2[3],point2[2]/point2[3]);
-  
+ 	glVertex3f(point1[0]/point1[3],point1[1]/point1[3],point1[2]/point1[3]);
+  	glVertex3f(point2[0]/point2[3],point2[1]/point2[3],point2[2]/point2[3]);
+  glEnd();
+	glPopMatrix();
+  //std::cout<<"Number of children "<<jtptr->get_childlist()->size()<<std::endl;
+  for( std::list<joint_t *>::iterator iter = (*(jtptr->get_childlist())).begin(); iter != (*(jtptr->get_childlist())).end(); iter++){
+  	render_pose(*iter);
+  }
 }
+
+
 
 void bvh_t::render_canonical_pose(void)
 {
@@ -156,16 +165,16 @@ void bvh_t::render_canonical_pose(void)
   util::math::vec4 origin=util::math::vec4(0,0,0,1);
   util::math::vec4 point1;
   util::math::vec4 point2;
-  glBegin(GL_LINES);
+  
   for(iter = hierarchy->get_joint_list()->begin(); iter != hierarchy->get_joint_list()->end(); iter++)
     {
       float values[6]={0,0,0,0,0,0};
       hierarchy->update_joint_matrix((*iter),values);
-      render_pose((*iter));
     }
-  glEnd();
+    render_pose(hierarchy->get_root_ptr());
   
 }
+
 
 
 
@@ -178,15 +187,15 @@ void bvh_t::render_frame(unsigned int frame_number)
   util::math::vec4 origin=util::math::vec4(0,0,0,1);
   util::math::vec4 point1;
   util::math::vec4 point2;
-  glBegin(GL_LINES);
+  
   for(iter = hierarchy->get_joint_list()->begin(); iter != hierarchy->get_joint_list()->end(); iter++)
     {
       float* values=new float[((*iter)->get_channels()).num_channels];
       values=data[frame_number]+offset_channels;
       hierarchy->update_joint_matrix((*iter),values);
-      render_pose((*iter));
+      
       offset_channels+=((*iter)->get_channels()).num_channels;
-    }
-  glEnd();
+   }
+ 	render_pose(hierarchy->get_root_ptr());
 }
 

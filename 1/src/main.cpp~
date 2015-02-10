@@ -52,7 +52,7 @@ void renderGL(unsigned int i){
 	}
 	if(SKELETON==true){
 		glfwSetTime(0);
-		if(REST==true)
+		if(i==-1)
 			bvh_fig->render_canonical_pose();
 		else
 			bvh_fig->render_frame(i);
@@ -61,7 +61,7 @@ void renderGL(unsigned int i){
 	else{
 		glfwSetTime(0);
 		glScalef(2,2,2);
-		if(REST==true)
+		if(i==-1)
 			robot.makeRobot();
 		else
 			robot.makeRobot(Animation_data[i]);

@@ -126,9 +126,6 @@ public:
     {
       initStructuralConstraints();
       
-      initTexture();
-      //initLights();
-      
       initHip();
       initBust();
       initNeck();
@@ -160,10 +157,6 @@ public:
 
     }
 
-  void initTexture();
-
-  //void initLights();
-  //void setLights();
   void setRobotProperties();
 
   void initStructuralConstraints();

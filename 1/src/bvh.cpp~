@@ -124,7 +124,7 @@ void bvh_t::render_pose(joint_t *jtptr)
   util::math::vec4 origin=util::math::vec4(0,0,0,1);
   joint_t* parent=jtptr->get_parent();
   point1=current_M*origin;
-
+  //std::cout<<"Creating a joint"<<std::endl;
   //Making sphere at joint position
   glBegin(GL_LINES);
   for(double phi=0;phi<2*3.14;phi+=0.314){

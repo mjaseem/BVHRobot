@@ -13,7 +13,8 @@ void usage(void)
 bool PLAY;
 bool SKELETON;
 bool FORWARD,BACKWARD;
-bool CAMERA;
+bool CAMERA1;
+bool CAMERA2;
 bool REST;
 //!GLFW keyboard callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -33,7 +34,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
 		BACKWARD=true;
 	if (key == GLFW_KEY_F4 && action == GLFW_PRESS)
-		CAMERA=!CAMERA;
+		CAMERA1=!CAMERA1;
+	if (key == GLFW_KEY_F5 && action == GLFW_PRESS)
+		CAMERA2=!CAMERA2;
 
 }
 
@@ -42,13 +45,16 @@ void renderGL(unsigned int i){
 
 	glPushMatrix();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if(CAMERA)	
+	if(CAMERA1)	
 	{
 			double dist = -100;
 			double angle = Animation_data[i][5];
 			double delta_x = dist * sin( angle * M_PI / 180);
 			double delta_z = dist * cos( angle * M_PI / 180);
 			gluLookAt(Animation_data[i][0]+delta_x,Animation_data[i][1],Animation_data[i][2]+delta_z,Animation_data[i][0],Animation_data[i][1],Animation_data[i][2],0,1,0);
+	}
+	if(CAMERA2){
+		gluLookAt(0,0,100,Animation_data[i][0],Animation_data[i][1],Animation_data[i][2],0,1,0);
 	}
 	if(SKELETON==true){
 		glfwSetTime(0);
@@ -120,7 +126,8 @@ int main(int argc, char **argv)
 	
 	PLAY=false;
 	SKELETON=true;
-	CAMERA=false;
+	CAMERA1=false;
+	CAMERA2=false;
 	REST=true;
 	robot = Robot();
 	if(bvhfilename=="dance.bvh")
